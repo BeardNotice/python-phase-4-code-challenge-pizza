@@ -64,7 +64,7 @@ class RestaurantPizza(db.Model, SerializerMixin):
     restaurant = db.relationship("Restaurant", back_populates="restaurant_pizzas")
     pizza = db.relationship("Pizza", back_populates="restaurant_pizzas")
     # add serialization rules
-    serialize_only = ("id", "pizza", "pizza_id", "price", "restaurant_id")
+    serialize_only = ("id", "pizza", "pizza_id", "price", "restaurant", "restaurant_id")
 
     # add validation
     @validates("price")

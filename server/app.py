@@ -50,6 +50,26 @@ def pizzas():
 
     return make_response(pizzas, 200)
 
+@app.route("/restaurant_pizzas", methods=["POST"])
+def create_restraunt_pizzas():
+    data = request.get_json()
+    if not data:
+        return Exception({"errors": "No input data provided"}, 400)
+    
+    price = data.get("price")
+    pizza_id = data.get("pizza_id")
+    restaurant_id = data.get("restaurant_id")
+
+    new_restaurant_pizza = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
+
+    try:
+        db.session.add(new_restaurant_pizza)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return make_response({"errors": [e]})
+
+    return make_response(new_restaurant_pizza.to_dict(), 201)
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
