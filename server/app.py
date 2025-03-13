@@ -55,19 +55,16 @@ def create_restraunt_pizzas():
     data = request.get_json()
     if not data:
         return Exception({"errors": "No input data provided"}, 400)
-    
-    price = data.get("price")
-    pizza_id = data.get("pizza_id")
-    restaurant_id = data.get("restaurant_id")
-
-    new_restaurant_pizza = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
-
     try:
-        db.session.add(new_restaurant_pizza)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        return make_response({"errors": [e]})
+        price = data.get("price")
+        pizza_id = data.get("pizza_id")
+        restaurant_id = data.get("restaurant_id")
+        new_restaurant_pizza = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
+    except ValueError as e:
+        return make_response({"errors": ["validation errors"]}, 400)
+
+    db.session.add(new_restaurant_pizza)
+    db.session.commit()
 
     return make_response(new_restaurant_pizza.to_dict(), 201)
 
