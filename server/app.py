@@ -29,12 +29,26 @@ def restaurants():
 
     return make_response(restaurants, 200)
 
-@app.route("/restaurants/<int:id>", methods=["GET"])
+@app.route("/restaurants/<int:id>", methods=["GET", "DELETE"])
 def restaurants_by_id(id):
     restaurant = Restaurant.query.filter(Restaurant.id==id).first()
+    if not restaurant:
+        return make_response({"error": "Restaurant not found"}, 404)
+    if request.method == "GET":
+        return make_response(restaurant.to_dict(), 200)
 
-    return make_response(restaurant.to_dict(), 200)
+    elif request.method == "DELETE":
 
+        db.session.delete(restaurant)
+        db.session.commit()
+
+        return make_response("", 204)
+
+@app.route("/pizzas", methods=["GET"])
+def pizzas():
+    pizzas = [pizza.to_dict() for pizza in Pizza.query.all()]
+
+    return make_response(pizzas, 200)
 
 
 if __name__ == "__main__":
