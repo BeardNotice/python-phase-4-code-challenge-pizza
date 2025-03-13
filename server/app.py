@@ -20,9 +20,21 @@ db.init_app(app)
 api = Api(app)
 
 
-@app.route("/")
-def index():
-    return "<h1>Code challenge</h1>"
+@app.route("/restaurants", methods=["GET"])
+def restaurants():
+    restaurants = [
+        {key: value for key, value in restaurant.to_dict().items() if key != 'restaurant_pizzas'}
+        for restaurant in Restaurant.query.all()
+        ]
+
+    return make_response(restaurants, 200)
+
+@app.route("/restaurants/<int:id>", methods=["GET"])
+def restaurants_by_id(id):
+    restaurant = Restaurant.query.filter(Restaurant.id==id).first()
+
+    return make_response(restaurant.to_dict(), 200)
+
 
 
 if __name__ == "__main__":

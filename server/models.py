@@ -45,7 +45,7 @@ class Pizza(db.Model, SerializerMixin):
                                     "restaurant",
                                     creator=lambda restaurant_obj: RestaurantPizza(restaurant=restaurant_obj))
     # add serialization rules
-    serialize_rules=("-restaurant_pizzas.pizza",)
+    serialize_rules=("-restaurant_pizzas",)
 
     def __repr__(self):
         return f"<Pizza {self.name}, {self.ingredients}>"
@@ -61,10 +61,10 @@ class RestaurantPizza(db.Model, SerializerMixin):
     pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id', ondelete="CASCADE"))
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id', ondelete="CASCADE"))
 
-    pizza = db.relationship("Pizza", back_populates="restaurant_pizzas")
     restaurant = db.relationship("Restaurant", back_populates="restaurant_pizzas")
+    pizza = db.relationship("Pizza", back_populates="restaurant_pizzas")
     # add serialization rules
-    serialize_rules = ("-restaurant.restaurant_pizzas", "-pizza.restaurant_pizzas")
+    serialize_only = ("id", "pizza", "pizza_id", "price", "restaurant_id")
 
     # add validation
     @validates("price")
