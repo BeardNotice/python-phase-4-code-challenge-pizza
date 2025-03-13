@@ -51,10 +51,10 @@ def pizzas():
     return make_response(pizzas, 200)
 
 @app.route("/restaurant_pizzas", methods=["POST"])
-def create_restraunt_pizzas():
+def create_restaurant_pizzas():
     data = request.get_json()
     if not data:
-        return Exception({"errors": "No input data provided"}, 400)
+        return make_response({"errors": "No input data provided"}, 400)
     try:
         price = data.get("price")
         pizza_id = data.get("pizza_id")
